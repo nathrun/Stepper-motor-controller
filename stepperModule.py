@@ -73,5 +73,11 @@ class stepperController(object):
         else:
             curSeq = dualPhaseStepping[1]
 
+        #assign GPIO pins here
+
         #make for loop to run through curSeq to make motor spin the correct amount of times
         #do not forget to add sleep
+
+        #GPIO.cleanup() <-- check if there is a way to just cleanup pins that were used for this script.
+        #cleanup pins after each use of the stepperController to make sure that GPIO pins are never
+        #left assigned. check if python has an OnDestroy, then this could be moved into there
