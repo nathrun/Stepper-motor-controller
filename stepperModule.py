@@ -1,13 +1,13 @@
 #add line to run on raspberry pi
 
-#Documentation
+#---Documentation---------------------------------------------------------------
 #
 #
 #
 #
 #
 #
-#--------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 import time
 import RPi.GPIO as GPIO
@@ -42,18 +42,21 @@ class stepperController(object):
         ]
     ]
 
-    def __init__(self,motorPinsArray, stepsPerRevolution):
+    def __init__(self,motorPinsArray, stepsPerRevolution, timeBetweenStep):    #<-- needs to be tested
         self.pins = motorPinsArray
         self.stepsInRevolution = stepsPerRevolution
+        self.stepBreak = timeBetweenStep
 
 
         #add some checks for the values entered
         if(type(self.pins) != list):
             #send exception
 
+    #---end of def __init__-----------------------------------------------------
+
     #Function returns a bool, False if any arguments are not correct
     #and True once the stepper motor has completed spinning.
-    def spinMotor(numRevolution, stepPhase="dual", stepType='full'):
+    def spinMotor(numRevolution, stepPhase="dual", stepType='full'):    #<-- needs to be tested
         if(stepPhase != 'dual' or stepPhase != 'single'):
             return False
             #should change to throw exception as well for more detail
@@ -63,6 +66,7 @@ class stepperController(object):
 
 
         curSeq = []
+        steps = stepsInRevolution
         if(stepPhase == 'single'):
             if(stepType == 'half'):
                 print('can not do half steps on single phase stepping. defualted to full steps')
@@ -70,14 +74,29 @@ class stepperController(object):
             curSeq = singlePhaseStepping
         elif(stepType == 'half'):
             curSeq = dualPhaseStepping[0]
+            steps = steps*2
         else:
             curSeq = dualPhaseStepping[1]
 
         #assign GPIO pins here
+        if(GPIO.getmode != GPIO.Board):
+            GPIO.setmode(GPIO.Board)
+        for pin in self.pins:
+            GPIO.setup(pin, GPIO.OUT, initial=0)
 
         #make for loop to run through curSeq to make motor spin the correct amount of times
         #do not forget to add sleep
+        phase = 0
+        for x in range(round(steps*numRevolution)):
+            for pin in range(4):
+                GPIO.output(pin, curSeq[phase][pin])
+            time.sleep(self.stepBreak)
+            phase += 1
+            if(phase >= len(curSeq)):
+                phase = 0
 
-        #GPIO.cleanup() <-- check if there is a way to just cleanup pins that were used for this script.
-        #cleanup pins after each use of the stepperController to make sure that GPIO pins are never
-        #left assigned. check if python has an OnDestroy, then this could be moved into there
+        #end of turning phase
+
+        GPIO.cleanup()
+        return True
+#---end of def spinMotor()------------------------------------------------------
