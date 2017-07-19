@@ -14,6 +14,9 @@ import RPi.GPIO as GPIO
 
 class stepperController(object):
 
+    #array that rearanges the format of the pins to be used on an L298N h-bridge
+    pinShuffle = [0,3,1,2]
+
     #dualPhaseStepping[0] for half stepping
     #dualPhaseStepping[1] for full stepping
     #can not do half stepping on singlePhaseStepping
@@ -90,7 +93,7 @@ class stepperController(object):
         phase = 0
         for x in range(int(round(steps*numRevolution))):
             for pin in range(4):
-                GPIO.output(self.pins[pin], curSeq[phase][pin])
+                GPIO.output(self.pins[self.pinShuffle[pin]], curSeq[phase][pin])
             time.sleep(self.stepBreak)
             phase += 1
             if(phase >= len(curSeq)):
