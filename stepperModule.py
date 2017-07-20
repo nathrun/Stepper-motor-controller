@@ -89,6 +89,9 @@ class stepperController(object):
 
         print stepBreak
 
+        if (numRevolution ==0):
+            return True #skip irrelavant setup and gpio.cleanup
+
         #assign GPIO pins here
         if(GPIO.getmode != GPIO.BCM):
             GPIO.setmode(GPIO.BCM)
