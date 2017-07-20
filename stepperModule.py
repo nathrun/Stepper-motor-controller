@@ -1,5 +1,3 @@
-#add line to run on raspberry pi
-
 #---Documentation---------------------------------------------------------------
 # This module was designed to run with a L298N h-bridge module. I created this
 # in my spare time and did not test extensively so there might be bugs
@@ -20,7 +18,6 @@ import time
 import RPi.GPIO as GPIO
 
 class stepperController(object):
-
     #array that rearanges the format of the pins to be used on an L298N h-bridge
     pinShuffle = [0,3,1,2]
 
@@ -81,7 +78,6 @@ class stepperController(object):
         if(stepPhase == 'single'):
             if(stepType == 'half'):
                 print('can not do half steps on single phase stepping. defualted to full steps')
-                #possibly change color to red to make more visible
             curSeq = self.singlePhaseStepping
         elif(stepType == 'half'):
             curSeq = self.dualPhaseStepping[1]
@@ -103,7 +99,6 @@ class stepperController(object):
             GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
 
         #make for loop to run through curSeq to make motor spin the correct amount of times
-        #do not forget to add sleep
         phase = 0
         for x in range(int(round(steps*numRevolution))):
             for pin in range(4):
@@ -112,11 +107,10 @@ class stepperController(object):
             phase += 1
             if(phase >= len(curSeq)):
                 phase = 0
-
+        #end of turning phase
+        #set pins to LOW
         for pin in self.pins:
             GPIO.output(pin,0)
-
-        #end of turning phase
 
         GPIO.cleanup()
         return True
