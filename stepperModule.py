@@ -58,9 +58,6 @@ class stepperController(object):
         if(type(self.pins) != list):
             #send exception
             print('please enter list')
-            return False
-        else:
-            return True
     #---end of def __init__-----------------------------------------------------
 
     #Function returns a bool, False if any arguments are not correct
