@@ -6,12 +6,24 @@
 #             these inputs -> [IN1,IN2,IN3,IN4]
 #           - stepsPerRevolution is the amount of steps your stepper motor
 #             requires to do a single revolution
-#           - defaultRPM -> pretty obvious...
+#           - defaultRPM -> pretty obvious... can be either an integer or float
 #
-#   Will return False if any paramater is not correct
+# def setDefaultRPM:
+#   params  -defaultRPM -> new default rpm for object, can be either an
+#            integer or float
+#   will return True if operation happened successfully
 #
-#
-#
+# def spinMotor:
+#   params  - numRevolution is a float that indicates exactly how many
+#             revolution you would like the stepper motor to turn. If negative,
+#             the motor will turn in the opposite direction.
+#           - stepPhase (optional, default='dual'), refers to either 'single'
+#             phase stepping or 'dual' phase stepping
+#             (dual phase, both coils will always be engaged)
+#           - stepType (optional, default='full'), can only be used of stepPhase
+#             is equal to 'dual'.
+#           - rpm (optional), if you want to set a temporary rpm,
+#             either an integer or float
 #-------------------------------------------------------------------------------
 
 import time
@@ -58,16 +70,20 @@ class stepperController(object):
         if(type(self.pins) != list):
             #send exception
             print('please enter list')
+        if (type(self.stepsInRevolution) != int):
+            print('stepsPerRevolution must be an integer value')
+        if (type(self.d_RPM) != int and type(self.d_RPM) != float):
+            print('defaultRPM must be an integer value')
     #---end of def __init__-----------------------------------------------------
 
     #Function returns a bool, False if any arguments are not correct
     #and True once the stepper motor has completed spinning.
     def spinMotor(self, numRevolution, stepPhase="dual", stepType='full', rpm=0):    #<-- needs to be tested
         if(stepPhase != 'dual' and stepPhase != 'single'):
-            return 'fail 1'
+            return 'stepPhase must equal "single" or "dual"'
             #should change to throw exception as well for more detail
         if(stepType != 'half' and stepType != 'full'):
-            return 'fail 2'
+            return 'stepType must equal "half" or "full"'
             #should change to throw exception as well for more detail
 
         curSeq = []
@@ -87,7 +103,13 @@ class stepperController(object):
         else:
             stepBreak = 1.0/(steps*rpm)
 
-        print stepBreak
+        #if rpm < 0, reverse curSeq and change rpm to possitive
+        if (rpm < 0):
+            curSeq.reverse()
+            rpm *= -1
+            print 'DEBUG curSeq'
+            print curSeq
+            print 'DEBUG end'
 
         if (numRevolution ==0):
             return True #skip irrelavant setup and gpio.cleanup
@@ -117,5 +139,7 @@ class stepperController(object):
     #---end of def spinMotor()------------------------------------------------------
 
     def setDefaultRPM(self, defaultRPM):
-        self.d_RPM = defaultRPM
-        return True
+        result = True if(type(defaultRPM)==int or type(defaultRPM)== float) else 'defaultRPM must be an integer or a float'
+        if result==True:
+            self.d_RPM = defaultRPM
+        return result
