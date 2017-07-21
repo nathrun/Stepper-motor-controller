@@ -6,13 +6,11 @@
 #             these inputs -> [IN1,IN2,IN3,IN4]
 #           - stepsPerRevolution is the amount of steps your stepper motor
 #             requires to do a single revolution
-#           - defaultRPM -> pretty obvious...
-#
-#   Will return False if any paramater is not correct
+#           - defaultRPM -> pretty obvious... can be either an integer or float
 #
 # def setDefaultRPM:
-#   params  -defaultRPM -> new default rpm for object
-#
+#   params  -defaultRPM -> new default rpm for object, can be either an
+#            integer or float
 #   will return True if operation happened successfully
 #
 # def spinMotor:
@@ -24,7 +22,8 @@
 #             (dual phase, both coils will always be engaged)
 #           - stepType (optional, default='full'), can only be used of stepPhase
 #             is equal to 'dual'.
-#           - rpm (optional), if you want to set a temporary rpm
+#           - rpm (optional), if you want to set a temporary rpm,
+#             either an integer or float
 #-------------------------------------------------------------------------------
 
 import time
