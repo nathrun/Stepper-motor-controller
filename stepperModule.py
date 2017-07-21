@@ -10,8 +10,21 @@
 #
 #   Will return False if any paramater is not correct
 #
+# def setDefaultRPM:
+#   params  -defaultRPM -> new default rpm for object
 #
+#   will return True if operation happened successfully
 #
+# def spinMotor:
+#   params  - numRevolution is a float that indicates exactly how many
+#             revolution you would like the stepper motor to turn. If negative,
+#             the motor will turn in the opposite direction.
+#           - stepPhase (optional, default='dual'), refers to either 'single'
+#             phase stepping or 'dual' phase stepping
+#             (dual phase, both coils will always be engaged)
+#           - stepType (optional, default='full'), can only be used of stepPhase
+#             is equal to 'dual'.
+#           - rpm (optional), if you want to set a temporary rpm
 #-------------------------------------------------------------------------------
 
 import time
@@ -90,7 +103,10 @@ class stepperController(object):
         else:
             stepBreak = 1.0/(steps*rpm)
 
-        print stepBreak
+        #if rpm < 0, reverse curSeq and change rpm to possitive
+        if (rpm < 0):
+            curSeq.reverse()
+            rpm *= -1
 
         #assign GPIO pins here
         if(GPIO.getmode != GPIO.BCM):
