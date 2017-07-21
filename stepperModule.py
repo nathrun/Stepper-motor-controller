@@ -71,19 +71,20 @@ class stepperController(object):
         if(type(self.pins) != list):
             #send exception
             print('please enter list')
-            return False
-        else:
-            return True
+        if (type(self.stepsInRevolution) != int):
+            print('stepsPerRevolution must be an integer value')
+        if (type(self.d_RPM) != int and type(self.d_RPM) != float):
+            print('defaultRPM must be an integer value')
     #---end of def __init__-----------------------------------------------------
 
     #Function returns a bool, False if any arguments are not correct
     #and True once the stepper motor has completed spinning.
     def spinMotor(self, numRevolution, stepPhase="dual", stepType='full', rpm=0):    #<-- needs to be tested
         if(stepPhase != 'dual' and stepPhase != 'single'):
-            return 'fail 1'
+            return 'stepPhase must equal "single" or "dual"'
             #should change to throw exception as well for more detail
         if(stepType != 'half' and stepType != 'full'):
-            return 'fail 2'
+            return 'stepType must equal "half" or "full"'
             #should change to throw exception as well for more detail
 
         curSeq = []
@@ -107,6 +108,9 @@ class stepperController(object):
         if (rpm < 0):
             curSeq.reverse()
             rpm *= -1
+            print 'DEBUG curSeq'
+            print curSeq
+            print 'DEBUG end'
 
         #assign GPIO pins here
         if(GPIO.getmode != GPIO.BCM):
@@ -133,5 +137,7 @@ class stepperController(object):
     #---end of def spinMotor()------------------------------------------------------
 
     def setDefaultRPM(self, defaultRPM):
-        self.d_RPM = defaultRPM
-        return True
+        result = True if(type(defaultRPM)==int or type(defaultRPM)== float) else 'defaultRPM must be an integer or a float'
+        if result==True:
+            self.d_RPM = defaultRPM
+        return result
