@@ -103,10 +103,10 @@ class stepperController(object):
         else:
             stepBreak = 1.0/(steps*rpm)
 
-        #if rpm < 0, reverse curSeq and change rpm to possitive
-        if (rpm < 0):
+        #if numRevolution < 0, reverse curSeq and change numRevolution to possitive
+        if (numRevolution < 0):
             curSeq.reverse()
-            rpm *= -1
+            numRevolution *= -1
             print 'DEBUG curSeq'
             print curSeq
             print 'DEBUG end'
