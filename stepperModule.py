@@ -99,9 +99,9 @@ class stepperController(object):
             curSeq = self.dualPhaseStepping[0]
 
         if (rpm==0):
-            stepBreak = 1.0/(steps*self.d_RPM)
+            stepBreak = 60.0/(steps*self.d_RPM)
         else:
-            stepBreak = 1.0/(steps*rpm)
+            stepBreak = 60.0/(steps*rpm)
 
         #if numRevolution < 0, reverse curSeq and change numRevolution to possitive
         if (numRevolution < 0):
